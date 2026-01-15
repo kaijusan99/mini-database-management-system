@@ -37,13 +37,26 @@ void Table::loadFromFile(string filename) {
         vector<string> row;
         string value;
         stringstream ss(line);
-
-        while (ss >> value) {
-            row.push_back(value);
+        if ( isInt(value) && columns.size() > 0 && columns[0].type == "string" ||
+             !isInt(value) && columns.size() > 0 && columns[0].type == "int" ) {
+            cout << "\nОшибка: неверный формат данных в файле\n";
+            return;
         }
-        if (row.size() != columns.size()) {
-            cout << "\nОшибка: количество столбцов в файле не соответствует таблице\n";
-            continue;
+        int i = 0;
+        while (ss >> value) {
+            if (i != columns.size()) {
+                cout << "\nОшибка: количество столбцов в файле не соответсвует количеству в таблице\n";
+                row.clear();
+                return;
+            }
+            if (validateInsert(value, columns[i])) {
+                row.push_back(value);
+            }
+            else {
+                row.clear();
+                return;
+            }
+            i++;
         }
         if (!row.empty())
             rows.push_back(row);

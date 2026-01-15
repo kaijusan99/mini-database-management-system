@@ -6,7 +6,7 @@ using namespace std;
 bool isInt(const string& s);
 bool isInRange(int value, int lower, int upper);
 
-void printCell(const string& value, int width);
+void printCell(string value, int width);
 
 struct Column {
     string name;

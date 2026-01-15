@@ -2,38 +2,9 @@
 #include <string>
 #include <windows.h>
 #include "table.h"
+#include "ui.h"
 
 using namespace std;
-
-void printMenu(string tableName) {
-    cout << "\n==================================================\n";
-    cout << "                 М И Н И   С У Б Д               \n";
-    cout << "==================================================\n";
-
-    cout << "Таблица: " << tableName;
-    cout << "\n==================================================\n";
-
-    cout << "  1. Добавление записи\n";
-    cout << "  2. Вывод всех записей\n";
-    cout << "  3. Удаление записи по номеру\n";
-    cout << "  4. Поиск по полю\n";
-    cout << "  5. Сортировка по выбранному полю\n";
-    cout << "  6. Сохранение и загрузка в/из файла\n";
-    cout << "  0. Выход\n";
-    cout << "==================================================\n";
-    cout << "Выберите пункт меню -> ";
-}
-
- 
-void clearScreen() {
-    system("cls");
-}
-
-void pause() {
-    cout << "\nНажмите Enter...";
-    cin.ignore();
-    cin.get();
-}
 
 int main() {
     // setlocale(LC_ALL, "Russian");
@@ -73,9 +44,8 @@ int main() {
                 vector<string>data;
                 string s;
                 cout << "\nВы добавляете запись.\n";
-                cout << "Введите данные пользователя по порядку [ Имя, Возраст, Зарплата ]: ";
-                for (auto& column : table.columns) {
-                    cin >> s;
+                cout << "Введите данные пользователя по порядку [ Имя, Возраст, Зарплата ] через пробел. Чтобы закончить введите 0.\n";
+                while (cin >> s && s != "0") {
                     data.push_back(s);
                 }
                 table.insert(data);
@@ -90,9 +60,14 @@ int main() {
             }
             case 3: {
                 cout << "Удаление записи. Введите номер: ";
-                int number;
+                string number;
                 cin >> number;
-                table.deleteByNumber(number);
+                if (!isInt(number)) {
+                    cout << "\nВведите номер, а не буквы!\n";
+                    pause();
+                    break;
+                }
+                table.deleteByNumber(stoi(number));
                 pause();
                 break;
             }
@@ -101,7 +76,9 @@ int main() {
                 cout << "Введите поле (название колонки): ";
                 string field;
                 cin >> field;
-
+                for (int i = 0; i < field.length(); i++) {
+                    field[i] = tolower(field[i]);
+                }
                 cout << "Введите значение поля: ";
                 string value;
                 cin >> value;
@@ -115,33 +92,52 @@ int main() {
                 cout << "Введите поле (название колонки): ";
                 string field;
                 cin >> field;
+                for (int i = 0; i < field.length(); i++) {
+                    field[i] = tolower(field[i]);
+                }
 
                 cout << "\nСортировка по возрастанию(0) или убыванию(1): ";
-                int choice;
+                string choice;
                 cin >> choice;
                 
-                if (choice == 0) table.sortByField(field);
-                else if (choice == 1) table.sortByField(field, true);
+
+                if (choice == "0") table.sortByField(field);
+                else if (choice == "1") table.sortByField(field, true);
+                else cout << "\nНеверный ввод!\n";
                 pause();
                 break;
             }
             case 6: {
                 cout << "Сохранение и загрузка в/из файла\n";
+                cout << "  0. Вернуться\n";
                 cout << "  1. Сохранить файл\n";
                 cout << "  2. Загрузить файл\n";
-                cout << "  0. Вернуться\n";
                 cout << "Выберите пункт меню -> ";
-                int choice;
+                string choice;
                 cin >> choice;
-
-                if (choice == 0) break;
+                if (!isInt(choice)) {
+                    cout << "\nВведите номер, а не буквы!\n";
+                    pause();
+                    break;
+                }
+                if (choice != "0" && choice != "1" && choice != "2") {
+                    cout << "\nНеверный пункт меню!\n";
+                    pause();
+                    break;
+                }
+                if (choice == "0") break;
 
                 cout << "\nВведите название файла: ";
                 string filename;
                 cin >> filename;
+                if (isInt(filename)) {
+                    cout << "\nВведите название файла с расширением, а не цифры!\n";
+                    pause();
+                    break;
+                }
 
-                if (choice == 1) table.saveToFile(filename);
-                else if (choice == 2) table.loadFromFile(filename);
+                if (choice == "1") table.saveToFile(filename);
+                else if (choice == "2") table.loadFromFile(filename);
                 pause();
                 break;
             }

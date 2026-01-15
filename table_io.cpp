@@ -76,7 +76,7 @@ void Table::insert(vector<string>& values) {
     rows.push_back(row);
 }
 
-void printCell(const string& value, int width) {
+void printCell(string value, int width) {
     cout << " " << value;
     
     int spaces = width - 1 - value.length(); 

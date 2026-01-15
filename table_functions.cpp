@@ -6,7 +6,7 @@ using namespace std;
 
 void Table::deleteByNumber(int number) {
     if (number < 0 || number >= rows.size()) {
-        cout << "\nЗапись не найдена\n";
+        cout << "\nТакого индекса нет!\n";
         return;
     }
 
